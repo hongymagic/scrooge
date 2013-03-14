@@ -1,0 +1,24 @@
+{
+	"name": "lvr",
+	"author": "David Hong <d.hong@me.com>",
+	"version": "0.0.1",
+	"engines": {
+		"node": "0.10.x",
+		"npm": "1.2.x"
+	},
+	"dependencies": {
+		"statik": "*",
+		"mocha": "1.8.x",
+		"chai": "1.5.x",
+		"sinon-chai": "2.3.x"
+	},
+	"devDependencies": {
+		"grunt": "~0.4.0",
+		"grunt-contrib-jshint": "~0.2.0",
+		"grunt-contrib-concat": "~0.1.3",
+		"grunt-contrib-watch": "~0.3.1",
+		"grunt-docco": "~0.2.0"
+	},
+	"main": "server.js",
+	"subdomain": "lvr"
+}
