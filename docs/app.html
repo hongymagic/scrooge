@@ -2,7 +2,7 @@
 
 <html>
 <head>
-  <title>Simple LMI Calculator based on http://at.hon.gy/Z1pLvI. Is there a better way</title>
+  <title>app.litcoffee</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <link rel="stylesheet" media="all" href="public/stylesheets/normalize.css" />
   <link rel="stylesheet" media="all" href="docco.css" />
@@ -13,12 +13,19 @@
 
       <div class="header">
         
-          
-          <h1>Simple LMI Calculator based on <a href="http://at.hon.gy/Z1pLvI">http://at.hon.gy/Z1pLvI</a>. Is there a better way</h1>
-<h1>to implement this lookup?</h1>
+          <h1>app.litcoffee</h1>
+        
 
-          
-            <div class="highlight"><pre>LMI =
+        
+      </div>
+
+      
+        
+        <p>Simple LMI Calculator based on <a href="http://at.hon.gy/Z1pLvI">http://at.hon.gy/Z1pLvI</a>. Is there a better way
+to implement this lookup?</p>
+
+        
+          <div class="highlight"><pre>LMI =
 	lookup: (lvr, loan) -&gt;
 		b1 = [<span class="number">0.41</span>, <span class="number">0.61</span>, <span class="number">0.76</span>, <span class="number">0.91</span>, <span class="number">1.22</span>, <span class="number">1.68</span>, <span class="number">1.89</span>, <span class="number">2.10</span>]
 		b2 = [<span class="number">0.52</span>, <span class="number">0.78</span>, <span class="number">0.99</span>, <span class="number">1.18</span>, <span class="number">1.60</span>, <span class="number">2.20</span>, <span class="number">2.47</span>, <span class="number">2.74</span>]
@@ -49,15 +56,10 @@
 			index = <span class="number">7</span>
 
 		band[index] / <span class="number">100</span></pre></div>
-          
         
-
-        
-      </div>
-
       
         
-        <h1>Repayment periods</h1>
+        <p>Repayment periods</p>
 
         
           <div class="highlight"><pre>Period =
@@ -67,25 +69,25 @@
         
       
         
-        <h1>Mortgage</h1>
+        <p>Mortgage</p>
 
         
           <div class="highlight"><pre><span class="class"><span class="keyword">class</span> <span class="title">Mortgage</span> <span class="keyword">extends</span> <span class="title">Backbone</span>.<span class="title">Model</span></span></pre></div>
         
       
         
-        <h1>Every mortgage has these variables which can be adjusted.</h1>
+        <p>Every mortgage has these variables which can be adjusted.</p>
 
         
           <div class="highlight"><pre>defaults:
 		interest: <span class="number">5.74</span> / <span class="number">100</span>
 		price:    <span class="number">700000</span>
 		deposit:  <span class="number">150459</span>
-		duration: <span class="number">30</span> * <span class="number">12</span></pre></div>
+		duration: <span class="number">30</span></pre></div>
         
       
         
-        <h1>TODO: The big fat stamp duty!</h1>
+        <p>TODO: The big fat stamp duty!</p>
 
         
           <div class="highlight"><pre>stamp_duty: -&gt;
@@ -93,24 +95,26 @@
         
       
         
-        <h1>Loan is calculated based on the price of the property and the initial deposit</h1>
-<h1>put down on the property.</h1>
+        <p>Loan is calculated based on the price of the property and the initial deposit
+put down on the property.</p>
 
         
           <div class="highlight"><pre>loan: -&gt;
-		<span class="keyword">this</span>.price - <span class="keyword">this</span>.deposit</pre></div>
+		<span class="property">@price</span> - <span class="property">@deposit</span></pre></div>
         
       
         
-        <h1>This is the total monies borrowed from the lender.</h1>
+        <p>This is the total monies borrowed from the lender. It is common to add extra
+costs such as LMI, fees on top of the loan in order to decrease the intial
+LVR.</p>
 
         
           <div class="highlight"><pre>borrowing: -&gt;
-		<span class="keyword">this</span>.loan() + <span class="keyword">this</span>.lmi() + <span class="keyword">this</span>.fees() + <span class="keyword">this</span>.stamp_duty()</pre></div>
+		<span class="property">@loan</span>() + <span class="property">@lmi</span>() + <span class="property">@fees</span>() + <span class="property">@stamp_duty</span>()</pre></div>
         
       
         
-        <h1>TODO: Lender&#39;s settlement fee, legal fees, Registration fees, Other lender fees.</h1>
+        <p>TODO: Lender&#39;s settlement fee, legal fees, Registration fees, Other lender fees.</p>
 
         
           <div class="highlight"><pre>fees: -&gt;
@@ -118,56 +122,89 @@
         
       
         
-        <h1>Loan to Value Ratio (LVR) is calculated based on the loan and the price of the</h1>
-<h1>property.</h1>
-<p>#</p>
-<h1>Note: This value is almost always presented as percentage value.</h1>
+        <p>Loan to Value Ratio (LVR) is calculated based on the loan and the price of the
+property.</p>
+<p>Note: This value is almost always presented as percentage value.</p>
 
         
           <div class="highlight"><pre>lvr: -&gt;
-		<span class="keyword">this</span>.loan() / <span class="keyword">this</span>.price</pre></div>
+		<span class="property">@loan</span>() / <span class="property">@price</span></pre></div>
         
       
         
-        <h1>Depending on the LVR, a mortgage may need pay Lenders&#39; Mortgage Insurace. This</h1>
-<h1>value can vary depending on the LVR and the lender</h1>
+        <p>Depending on the LVR, a mortgage may need pay Lenders&#39; Mortgage Insurace. This
+value can vary depending on the LVR and the lender</p>
 
         
           <div class="highlight"><pre>lmi: -&gt;
-		LMI.lookup(<span class="keyword">this</span>.lvr(), <span class="keyword">this</span>.loan()) * <span class="keyword">this</span>.loan()</pre></div>
+		LMI.lookup(<span class="property">@lvr</span>(), <span class="property">@loan</span>()) * <span class="property">@loan</span>()</pre></div>
         
       
         
-        <h1>Monthly repayments for the mortgage based on above variables:</h1>
-<h1>M = P (i(1 + i)^n) / ((1 + i)^n - 1)</h1>
+        <p>Monthly repayments for the mortgage based on above variables:
+M = P (i(1 + i)^n) / ((1 + i)^n - 1)</p>
 
         
           <div class="highlight"><pre>repayments: () -&gt;
-		P = <span class="keyword">this</span>.borrowing()
-		i = <span class="keyword">this</span>.interest / Period.Monthly
-		n = <span class="keyword">this</span>.duration
-		P * (i * Math.pow((i + <span class="number">1</span>), n)) / (Math.pow((<span class="number">1</span> + i), n) - <span class="number">1</span>)
-
-	toJSON: -&gt;
-		_.extend _.clone(<span class="keyword">this</span>.attributes), {
-			fees       : <span class="keyword">this</span>.fees()
-			loan       : <span class="keyword">this</span>.loan()
-			borrowing  : <span class="keyword">this</span>.borrowing()
-			lvr        : <span class="keyword">this</span>.lvr() * <span class="number">100</span>
-			repayments : <span class="keyword">this</span>.repayments()
-			lmi        : <span class="keyword">this</span>.lmi()
-		}
-
-	toString: -&gt;
-		JSON.stringify <span class="keyword">this</span>.toJSON()</pre></div>
+		P = <span class="property">@borrowing</span>()
+		i = <span class="property">@interest</span> / Period.Monthly
+		n = <span class="property">@duration</span> * Period.Monthly
+		P * (i * Math.pow((i + <span class="number">1</span>), n)) / (Math.pow((<span class="number">1</span> + i), n) - <span class="number">1</span>)</pre></div>
         
       
         
-        <h1>Test</h1>
+        <p>Collection of model properties and computed properties. All units are in human
+readable format. For example, percentage units will be exported as: 70.10
+intead of 0.7010 which are used in calculations.</p>
+
+        
+          <div class="highlight"><pre>toJSON: -&gt;
+		_.extend _.clone(<span class="property">@attributes</span>), {
+			fees       : <span class="property">@fees</span>()
+			loan       : <span class="property">@loan</span>()
+			borrowing  : <span class="property">@borrowing</span>()
+			lvr        : <span class="property">@lvr</span>() * <span class="number">100</span>
+			repayments : <span class="property">@repayments</span>()
+			lmi        : <span class="property">@lmi</span>()
+		}
+
+	toString: -&gt;
+		JSON.stringify <span class="property">@toJSON</span>()</pre></div>
+        
+      
+        
+        <p>A view to let users input their own mortgage variables</p>
+
+        
+          <div class="highlight"><pre><span class="class"><span class="keyword">class</span> <span class="title">MortgageFormView</span> <span class="keyword">extends</span> <span class="title">Backbone</span>.<span class="title">View</span></span>
+	el: <span class="string">'#form'</span>
+
+	template: _.template $(<span class="string">'#__MortgageForm'</span>).html()
+
+	render: -&gt;
+		<span class="property">@$el</span>.html <span class="property">@template</span> <span class="property">@model</span>.toJSON()
+		@
+
+<span class="class"><span class="keyword">class</span> <span class="title">MortgageSummaryView</span> <span class="keyword">extends</span> <span class="title">Backbone</span>.<span class="title">View</span></span>
+	el: <span class="string">'#summary'</span>
+
+	template: _.template $(<span class="string">'#__MortgageSummary'</span>).html()
+
+	render: -&gt;
+		<span class="property">@$el</span>.html <span class="property">@template</span> <span class="property">@model</span>.toJSON()
+		@</pre></div>
+        
+      
+        
+        <p>Instantiate a default view for everyone as a starting point</p>
 
         
           <div class="highlight"><pre>m = <span class="keyword">new</span> Mortgage
-console.log m.toString()</pre></div>
+f = <span class="keyword">new</span> MortgageFormView { model: m }
+v = <span class="keyword">new</span> MortgageSummaryView { model: m }
+
+f.render()
+v.render()</pre></div>
         
       
       <div class="fleur">h</div>

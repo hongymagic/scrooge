@@ -1,5 +1,5 @@
-# Simple LMI Calculator based on http://at.hon.gy/Z1pLvI. Is there a better way
-# to implement this lookup?
+Simple LMI Calculator based on http://at.hon.gy/Z1pLvI. Is there a better way
+to implement this lookup?
 
 	LMI =
 		lookup: (lvr, loan) ->
@@ -33,83 +33,114 @@
 
 			band[index] / 100
 
-# Repayment periods
+Repayment periods
 
 	Period =
 		Monthly     : 12
 		Fortnightly : 24
 		Weekly      : 48
 
-# Mortgage
+Mortgage
 
 	class Mortgage extends Backbone.Model
 
-# Every mortgage has these variables which can be adjusted.
+Every mortgage has these variables which can be adjusted.
 
 		defaults:
 			interest: 5.74 / 100
 			price:    700000
 			deposit:  150459
-			duration: 30 * 12
+			duration: 30
 
-# TODO: The big fat stamp duty!
+TODO: The big fat stamp duty!
 
 		stamp_duty: ->
 			26990
 
-# Loan is calculated based on the price of the property and the initial deposit
-# put down on the property.
+Loan is calculated based on the price of the property and the initial deposit
+put down on the property.
 
 		loan: ->
-			this.price - this.deposit
+			@price - @deposit
 
-# This is the total monies borrowed from the lender.
+This is the total monies borrowed from the lender. It is common to add extra
+costs such as LMI, fees on top of the loan in order to decrease the intial
+LVR.
 
 		borrowing: ->
-			this.loan() + this.lmi() + this.fees() + this.stamp_duty()
+			@loan() + @lmi() + @fees() + @stamp_duty()
 
-# TODO: Lender's settlement fee, legal fees, Registration fees, Other lender fees.
+TODO: Lender's settlement fee, legal fees, Registration fees, Other lender fees.
 
 		fees: ->
 			2469
 
-# Loan to Value Ratio (LVR) is calculated based on the loan and the price of the
-# property.
-#
-# Note: This value is almost always presented as percentage value.
+Loan to Value Ratio (LVR) is calculated based on the loan and the price of the
+property.
+
+Note: This value is almost always presented as percentage value.
 
 		lvr: ->
-			this.loan() / this.price
+			@loan() / @price
 
-# Depending on the LVR, a mortgage may need pay Lenders' Mortgage Insurace. This
-# value can vary depending on the LVR and the lender
+Depending on the LVR, a mortgage may need pay Lenders' Mortgage Insurace. This
+value can vary depending on the LVR and the lender
 
 		lmi: ->
-			LMI.lookup(this.lvr(), this.loan()) * this.loan()
+			LMI.lookup(@lvr(), @loan()) * @loan()
 
-# Monthly repayments for the mortgage based on above variables:
-# 	M = P (i(1 + i)^n) / ((1 + i)^n - 1)
+Monthly repayments for the mortgage based on above variables:
+M = P (i(1 + i)^n) / ((1 + i)^n - 1)
 
 		repayments: () ->
-			P = this.borrowing()
-			i = this.interest / Period.Monthly
-			n = this.duration
+			P = @borrowing()
+			i = @interest / Period.Monthly
+			n = @duration * Period.Monthly
 			P * (i * Math.pow((i + 1), n)) / (Math.pow((1 + i), n) - 1)
 
+Collection of model properties and computed properties. All units are in human
+readable format. For example, percentage units will be exported as: 70.10
+intead of 0.7010 which are used in calculations.
+
 		toJSON: ->
-			_.extend _.clone(this.attributes), {
-				fees       : this.fees()
-				loan       : this.loan()
-				borrowing  : this.borrowing()
-				lvr        : this.lvr() * 100
-				repayments : this.repayments()
-				lmi        : this.lmi()
+			_.extend _.clone(@attributes), {
+				fees       : @fees()
+				loan       : @loan()
+				borrowing  : @borrowing()
+				lvr        : @lvr() * 100
+				repayments : @repayments()
+				lmi        : @lmi()
 			}
 
 		toString: ->
-			JSON.stringify this.toJSON()
+			JSON.stringify @toJSON()
 
-# Test
+A view to let users input their own mortgage variables
+
+	class MortgageFormView extends Backbone.View
+		el: '#form'
+
+		template: _.template $('#__MortgageForm').html()
+
+		render: ->
+			@$el.html @template @model.toJSON()
+			@
+
+	class MortgageSummaryView extends Backbone.View
+		el: '#summary'
+
+		template: _.template $('#__MortgageSummary').html()
+
+		render: ->
+			@$el.html @template @model.toJSON()
+			@
+
+
+Instantiate a default view for everyone as a starting point
 
 	m = new Mortgage
-	console.log m.toString()
+	f = new MortgageFormView { model: m }
+	v = new MortgageSummaryView { model: m }
+
+	f.render()
+	v.render()

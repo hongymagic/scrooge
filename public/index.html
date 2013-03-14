@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title></title>
+		<title>Mortgage repayment calculator – Scrooge</title>
 
 		<script src="scripts/lib/underscore.js"></script>
 		<script src="scripts/lib/jquery.js"></script>
@@ -10,6 +10,27 @@
 		<script src="scripts/lib/backbone-ext.js"></script>
 	</head>
 	<body>
+		<section id="summary"></section>
+		<section id="form"></section>
+
+		<script type="text/html" id="__MortgageSummary">
+			<p>
+				Your total loan amount is <%- borrowing %> of which <%- lmi %> is
+				lenders' mortgage insurance, <%- fees %> worth of fees.
+			</p>
+			<p>
+				You will be paying <%- repayments %> every month for next
+				<%- duration %> years
+			</p>
+		</script>
+		<script type="text/html" id="__MortgageForm">
+			<form>
+				<input type="text" id="price" placeholder="Property value">
+				<input type="text" id="deposit" placeholder="Total savings">
+				<input type="number" id="interest" placeholder="Interest rate">
+				<input type="number" id="duration" placeholder="Repayment duration in months">
+			</form>
+		</script>
 		<script src="scripts/app.js"></script>
 	</body
 </html>
