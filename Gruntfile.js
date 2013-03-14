@@ -7,39 +7,22 @@ module.exports = function (grunt) {
 	grunt.initConfig({
 		pkg: '<json:package.json>',
 
-		concat: {
-			options: {
-				separator: ';'
-			},
-			dist: {
-				src: [
-					'!scripts/vendor/prefixfree.js',
-					'scripts/vendor/underscore.js',
-					'scripts/vendor/jquery.js',
-					'scripts/vendor/*.js',
-					'scripts/main.js'
-				],
-				dest: 'scripts/main.combined.min.js'
+		coffee: {
+			compile: {
+				file: {
+					'public/scripts/dist.js': ['public/coffee/*.*coffee']
+				}
 			}
 		},
 
-		jshint: {
-			all: [
-				'scripts/main.js'
-			]
-		},
-
 		watch: {
-			files: [
-				'scripts/**/*.js',
-				'!scripts/app.js'
-			],
+			files: ['coffee/*.*coffee'],
 			tasks: ['default']
 		},
 
 		docco: {
 			debug: {
-				src: 'scripts/main.js',
+				src: 'public/coffee/*.*coffee',
 				options: {
 					output: 'docs/'
 				}
@@ -47,12 +30,11 @@ module.exports = function (grunt) {
 		}
 	});
 
-	grunt.loadNpmTasks('grunt-contrib-jshint');
-	grunt.loadNpmTasks('grunt-contrib-concat');
+	grunt.loadNpmTasks('grunt-contrib-coffee');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-docco');
 
-	grunt.registerTask('default', ['docco', 'jshint', 'concat']);
+	grunt.registerTask('default', ['docco', 'coffee']);
 	grunt.registerTask('docs',    ['docco']);
 
 };
