@@ -80,7 +80,7 @@ to implement this lookup?</p>
 
         
           <div class="highlight"><pre>defaults:
-		interest: <span class="number">5.74</span> / <span class="number">100</span>
+		interest: <span class="number">5.74</span>
 		price:    <span class="number">700000</span>
 		deposit:  <span class="number">150459</span>
 		duration: <span class="number">30</span></pre></div>
@@ -147,7 +147,7 @@ M = P (i(1 + i)^n) / ((1 + i)^n - 1)</p>
         
           <div class="highlight"><pre>repayments: () -&gt;
 		P = <span class="property">@borrowing</span>()
-		i = <span class="property">@interest</span> / Period.Monthly
+		i = <span class="property">@interest</span> / Period.Monthly / <span class="number">100</span>
 		n = <span class="property">@duration</span> * Period.Monthly
 		P * (i * Math.pow((i + <span class="number">1</span>), n)) / (Math.pow((<span class="number">1</span> + i), n) - <span class="number">1</span>)</pre></div>
         
@@ -166,7 +166,20 @@ intead of 0.7010 which are used in calculations.</p>
 			lvr        : <span class="property">@lvr</span>() * <span class="number">100</span>
 			repayments : <span class="property">@repayments</span>()
 			lmi        : <span class="property">@lmi</span>()
-		}
+			stamp_duty : <span class="property">@stamp_duty</span>()
+		}</pre></div>
+        
+      
+        
+        <p>Prettified toJSON</p>
+
+        
+          <div class="highlight"><pre>toFormattedJSON: -&gt;
+		monies = [<span class="string">'price'</span>, <span class="string">'deposit'</span>, <span class="string">'stamp_duty'</span>, <span class="string">'fees'</span>, <span class="string">'loan'</span>, <span class="string">'borrowing'</span>, <span class="string">'repayments'</span>, <span class="string">'lmi'</span>]
+		json = <span class="property">@toJSON</span>()
+		<span class="keyword">for</span> key, value <span class="keyword">of</span> json
+			json[key] = accounting.formatMoney value <span class="keyword">if</span> key <span class="keyword">in</span> monies
+		json
 
 	toString: -&gt;
 		JSON.stringify <span class="property">@toJSON</span>()</pre></div>
@@ -181,8 +194,12 @@ intead of 0.7010 which are used in calculations.</p>
 
 	template: _.template $(<span class="string">'#__MortgageForm'</span>).html()
 
+	initialize: -&gt;
+		<span class="property">@binder</span> = <span class="keyword">new</span> Backbone.ModelBinder
+
 	render: -&gt;
 		<span class="property">@$el</span>.html <span class="property">@template</span> <span class="property">@model</span>.toJSON()
+		<span class="property">@binder</span>.bind <span class="property">@model</span>, <span class="property">@el</span>
 		@
 
 <span class="class"><span class="keyword">class</span> <span class="title">MortgageSummaryView</span> <span class="keyword">extends</span> <span class="title">Backbone</span>.<span class="title">View</span></span>
@@ -190,8 +207,11 @@ intead of 0.7010 which are used in calculations.</p>
 
 	template: _.template $(<span class="string">'#__MortgageSummary'</span>).html()
 
+	initialize: -&gt;
+		<span class="property">@listenTo</span> <span class="property">@model</span>, <span class="string">"change"</span>, <span class="property">@render</span>
+
 	render: -&gt;
-		<span class="property">@$el</span>.html <span class="property">@template</span> <span class="property">@model</span>.toJSON()
+		<span class="property">@$el</span>.html <span class="property">@template</span> <span class="property">@model</span>.toFormattedJSON()
 		@</pre></div>
         
       

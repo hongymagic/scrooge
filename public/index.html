@@ -4,32 +4,71 @@
 		<meta charset="utf-8">
 		<title>Mortgage repayment calculator – Scrooge</title>
 
+		<!-- Sets initial viewport load and disables zooming  -->
+		<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+
+		<!-- Makes your prototype chrome-less once bookmarked to your phone's home screen -->
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<!-- Set a shorter title for iOS6 devices when saved to home screen -->
+		<meta name="apple-mobile-web-app-title" content="Scrooge">
+
+		<!-- Set Apple icons for when prototype is saved to home screen -->
+		<link rel="apple-touch-icon-precomposed" sizes="114x114" href="touch-icons/apple-touch-icon-114x114.png">
+		<link rel="apple-touch-icon-precomposed" sizes="72x72" href="touch-icons/apple-touch-icon-72x72.png">
+		<link rel="apple-touch-icon-precomposed" sizes="57x57" href="touch-icons/apple-touch-icon-57x57.png">
+
+		<link rel="stylesheet" href="styles/ratchet.css">
+
+		<script src="scripts/lib/ratchet.js"></script>
+		<script src="scripts/lib/accounting.js"></script>
 		<script src="scripts/lib/underscore.js"></script>
 		<script src="scripts/lib/jquery.js"></script>
 		<script src="scripts/lib/backbone.js"></script>
-		<script src="scripts/lib/backbone-ext.js"></script>
+		<script src="scripts/lib/backbone.ext.js"></script>
+		<script src="scripts/lib/backbone.modelbinder.js"></script>
 	</head>
 	<body>
-		<section id="summary"></section>
-		<section id="form"></section>
+		<header class="bar-title">
+			<h1 class="title">Mortgage Calculator</h1>
+		</header>
+
+		<!-- Wrap all non-bar HTML in the .content div (this is actually what scrolls) -->
+		<div class="content">
+			<section id="summary"></section>
+			<div class="content-padded">
+				<form id="form"></form>
+			</div>
+		</div>
 
 		<script type="text/html" id="__MortgageSummary">
-			<p>
-				Your total loan amount is <%- borrowing %> of which <%- lmi %> is
-				lenders' mortgage insurance, <%- fees %> worth of fees.
-			</p>
-			<p>
-				You will be paying <%- repayments %> every month for next
-				<%- duration %> years
-			</p>
+			<ul class="list">
+				<li>Borrowing <span><%- borrowing %></span></li>
+				<li>LMI <span><%- lmi %></span></li>
+				<li>Fees <span><%- fees %></span></li>
+				<li>Repayments <span><%- repayments %></span> per month for <span><%- duration %></span> years!</li>
+			</ul>
 		</script>
 		<script type="text/html" id="__MortgageForm">
-			<form>
-				<input type="text" id="price" placeholder="Property value">
-				<input type="text" id="deposit" placeholder="Total savings">
-				<input type="number" id="interest" placeholder="Interest rate">
-				<input type="number" id="duration" placeholder="Repayment duration in months">
-			</form>
+			<div class="input-group">
+				<div class="input-row">
+					<label>Price</label>
+					<input type="number" name="price" placeholder="Property value">
+				</div>
+				<div class="input-row">
+					<label>Savings</label>
+					<input type="number" name="deposit" placeholder="Total savings">
+				</div>
+				<div class="input-row">
+					<label>Interest rate</label>
+					<input type="number" name="interest" placeholder="Interest rate">
+				</div>
+				<div class="input-row">
+					<label>Duration</label>
+					<input type="number" name="duration" placeholder="Repayment duration in months">
+				</div>
+			</div>
 		</script>
 		<script src="scripts/app.js"></script>
 	</body

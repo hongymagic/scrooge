@@ -47,7 +47,7 @@ Mortgage
 Every mortgage has these variables which can be adjusted.
 
 		defaults:
-			interest: 5.74 / 100
+			interest: 5.74
 			price:    700000
 			deposit:  150459
 			duration: 30
@@ -94,7 +94,7 @@ M = P (i(1 + i)^n) / ((1 + i)^n - 1)
 
 		repayments: () ->
 			P = @borrowing()
-			i = @interest / Period.Monthly
+			i = @interest / Period.Monthly / 100
 			n = @duration * Period.Monthly
 			P * (i * Math.pow((i + 1), n)) / (Math.pow((1 + i), n) - 1)
 
@@ -110,7 +110,17 @@ intead of 0.7010 which are used in calculations.
 				lvr        : @lvr() * 100
 				repayments : @repayments()
 				lmi        : @lmi()
+				stamp_duty : @stamp_duty()
 			}
+
+Prettified toJSON
+
+		toFormattedJSON: ->
+			monies = ['price', 'deposit', 'stamp_duty', 'fees', 'loan', 'borrowing', 'repayments', 'lmi']
+			json = @toJSON()
+			for key, value of json
+				json[key] = accounting.formatMoney value if key in monies
+			json
 
 		toString: ->
 			JSON.stringify @toJSON()
@@ -122,8 +132,12 @@ A view to let users input their own mortgage variables
 
 		template: _.template $('#__MortgageForm').html()
 
+		initialize: ->
+			@binder = new Backbone.ModelBinder
+
 		render: ->
 			@$el.html @template @model.toJSON()
+			@binder.bind @model, @el
 			@
 
 	class MortgageSummaryView extends Backbone.View
@@ -131,8 +145,11 @@ A view to let users input their own mortgage variables
 
 		template: _.template $('#__MortgageSummary').html()
 
+		initialize: ->
+			@listenTo @model, "change", @render
+
 		render: ->
-			@$el.html @template @model.toJSON()
+			@$el.html @template @model.toFormattedJSON()
 			@
 
 
