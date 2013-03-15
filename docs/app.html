@@ -175,10 +175,12 @@ intead of 0.7010 which are used in calculations.</p>
 
         
           <div class="highlight"><pre>toFormattedJSON: -&gt;
-		monies = [<span class="string">'price'</span>, <span class="string">'deposit'</span>, <span class="string">'stamp_duty'</span>, <span class="string">'fees'</span>, <span class="string">'loan'</span>, <span class="string">'borrowing'</span>, <span class="string">'repayments'</span>, <span class="string">'lmi'</span>]
+		monies   = [<span class="string">'price'</span>, <span class="string">'deposit'</span>, <span class="string">'stamp_duty'</span>, <span class="string">'fees'</span>, <span class="string">'loan'</span>, <span class="string">'borrowing'</span>, <span class="string">'repayments'</span>, <span class="string">'lmi'</span>]
+		decimals = [<span class="string">'lvr'</span>, <span class="string">'interest'</span>]
 		json = <span class="property">@toJSON</span>()
 		<span class="keyword">for</span> key, value <span class="keyword">of</span> json
 			json[key] = accounting.formatMoney value <span class="keyword">if</span> key <span class="keyword">in</span> monies
+			json[key] = accounting.formatNumber value <span class="keyword">if</span> key <span class="keyword">in</span> decimals
 		json
 
 	toString: -&gt;

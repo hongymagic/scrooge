@@ -116,10 +116,12 @@ intead of 0.7010 which are used in calculations.
 Prettified toJSON
 
 		toFormattedJSON: ->
-			monies = ['price', 'deposit', 'stamp_duty', 'fees', 'loan', 'borrowing', 'repayments', 'lmi']
+			monies   = ['price', 'deposit', 'stamp_duty', 'fees', 'loan', 'borrowing', 'repayments', 'lmi']
+			decimals = ['lvr', 'interest']
 			json = @toJSON()
 			for key, value of json
 				json[key] = accounting.formatMoney value if key in monies
+				json[key] = accounting.formatNumber value if key in decimals
 			json
 
 		toString: ->

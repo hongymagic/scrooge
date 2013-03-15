@@ -104,13 +104,17 @@ Mortgage = (function(_super) {
   };
 
   Mortgage.prototype.toFormattedJSON = function() {
-    var json, key, monies, value;
+    var decimals, json, key, monies, value;
     monies = ['price', 'deposit', 'stamp_duty', 'fees', 'loan', 'borrowing', 'repayments', 'lmi'];
+    decimals = ['lvr', 'interest'];
     json = this.toJSON();
     for (key in json) {
       value = json[key];
       if (__indexOf.call(monies, key) >= 0) {
         json[key] = accounting.formatMoney(value);
+      }
+      if (__indexOf.call(decimals, key) >= 0) {
+        json[key] = accounting.formatNumber(value);
       }
     }
     return json;
