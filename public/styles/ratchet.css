@@ -502,7 +502,7 @@ a {
 /* Pad each list item and add dividers */
 .list li {
   position: relative;
-  padding: 20px 60px 20px 10px; /* Given extra right padding to accomodate counts, chevrons or buttons */
+  padding: 10px 60px 10px 10px; /* Given extra right padding to accomodate counts, chevrons or buttons */
   border-bottom: 1px solid rgba(0, 0, 0, .1);
 }
 
@@ -1131,14 +1131,14 @@ select {
 }/* Modals
 -------------------------------------------------- */
 .modal {
-  position: fixed; 
+  position: fixed;
   top: 0;
   opacity: 0;
-  z-index: 11; 
+  z-index: 11;
   width: 100%;
   min-height: 100%;
   overflow: hidden;
-  background-color: #fff;  
+  background-color: #fff;
   -webkit-transform: translate3d(0, 100%, 0);
           transform: translate3d(0, 100%, 0);
   -webkit-transition: -webkit-transform .25s ease-in-out, opacity 1ms .25s;
@@ -1183,7 +1183,7 @@ select {
 .slider > ul > li {
   display: inline-block;
   vertical-align: top; /* Ensure that li always aligns to top */
-  width: 100%; 
+  width: 100%;
   height: 100%;
 }
 

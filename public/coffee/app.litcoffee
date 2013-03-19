@@ -124,6 +124,11 @@ Prettified toJSON
 				json[key] = accounting.formatNumber value if key in decimals
 			json
 
+Hack to get it working with Tangle
+
+		update: ->
+
+
 		toString: ->
 			JSON.stringify @toJSON()
 
@@ -134,6 +139,11 @@ A view to let users input their own mortgage variables
 
 		template: _.template $('#__MortgageForm').html()
 
+		events:
+			'touchstart [type=number]': 'registerTouch'
+			'touchmove  [type=number]': 'changeProperty'
+			'touchend   [type=number]': 'deregisterTouch'
+
 		initialize: ->
 			@binder = new Backbone.ModelBinder
 
@@ -141,6 +151,30 @@ A view to let users input their own mortgage variables
 			@$el.html @template @model.toJSON()
 			@binder.bind @model, @el
 			@
+
+		registerTouch: (event) ->
+			touch = event.originalEvent.touches[0]
+			@touch =
+				x: touch.pageX
+				y: touch.pageY
+
+		changeProperty: (event) ->
+			event.preventDefault()
+			touch = event.originalEvent.touches[0]
+			$target = $ event.target
+			property = $target.attr 'name'
+			step = $target.data 'step'
+			value = @model.get property
+
+			if (touch.pageY - @touch.y < 0)
+				value += step
+			else
+				value -= step
+
+			@model.set property, value
+
+		deregisterTouch: (event) ->
+			@touch = null
 
 	class MortgageSummaryView extends Backbone.View
 		el: '#summary'
@@ -153,7 +187,6 @@ A view to let users input their own mortgage variables
 		render: ->
 			@$el.html @template @model.toFormattedJSON()
 			@
-
 
 Instantiate a default view for everyone as a starting point
 
