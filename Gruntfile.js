@@ -16,7 +16,7 @@ module.exports = function (grunt) {
 		},
 
 		watch: {
-			files: ['coffee/*.*coffee'],
+			files: ['public/coffee/**/*.*coffee'],
 			tasks: ['default']
 		},
 
@@ -34,7 +34,7 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-docco');
 
-	grunt.registerTask('default', ['docco', 'coffeeify']);
+	grunt.registerTask('default', ['coffeeify']);
 	grunt.registerTask('docs',    ['docco']);
 
 };
