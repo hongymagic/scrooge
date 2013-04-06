@@ -1,0 +1,29 @@
+<!DOCTYPE html>  <html> <head>   <title>stamp-duty.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="app.html">                 app.coffee               </a>                                           <a class="source" href="lmi.html">                 lmi.coffee               </a>                                           <a class="source" href="stamp-duty.html">                 stamp-duty.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               stamp-duty.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="k">class</span> <span class="nx">StampDuty</span>
+
+  <span class="vi">@bands: </span><span class="p">[</span>
+    <span class="p">{</span> <span class="nv">min: </span><span class="mi">0</span><span class="p">,</span> <span class="nv">max: </span><span class="mi">14000</span><span class="p">,</span> <span class="nv">rate: </span><span class="mf">1.25</span> <span class="p">},</span>
+    <span class="p">{</span> <span class="nv">min: </span><span class="mi">14001</span><span class="p">,</span> <span class="nv">max: </span><span class="mi">30000</span><span class="p">,</span> <span class="nv">rate: </span><span class="mf">1.50</span> <span class="p">},</span>
+    <span class="p">{</span> <span class="nv">min: </span><span class="mi">30001</span><span class="p">,</span> <span class="nv">max: </span><span class="mi">80000</span><span class="p">,</span> <span class="nv">rate: </span><span class="mf">1.75</span> <span class="p">},</span>
+    <span class="p">{</span> <span class="nv">min: </span><span class="mi">80001</span><span class="p">,</span> <span class="nv">max: </span><span class="mi">300000</span><span class="p">,</span> <span class="nv">rate: </span><span class="mf">3.50</span> <span class="p">},</span>
+    <span class="p">{</span> <span class="nv">min: </span><span class="mi">300001</span><span class="p">,</span> <span class="nv">max: </span><span class="mi">1000000</span><span class="p">,</span> <span class="nv">rate: </span><span class="mf">4.50</span> <span class="p">},</span>
+    <span class="p">{</span> <span class="nv">min: </span><span class="mi">1000001</span><span class="p">,</span> <span class="nv">max: </span><span class="mi">3000000</span><span class="p">,</span> <span class="nv">rate: </span><span class="mf">5.50</span> <span class="p">},</span>
+    <span class="p">{</span> <span class="nv">min: </span><span class="mi">3000001</span><span class="p">,</span> <span class="nv">max: </span><span class="kc">Infinity</span><span class="p">,</span> <span class="nv">rate: </span><span class="mf">7.00</span> <span class="p">}</span>
+  <span class="p">]</span>
+
+  <span class="vi">@calculate: </span><span class="nf">(value) -&gt;</span>
+    <span class="nv">duty = </span><span class="nx">@bands</span><span class="p">.</span><span class="nx">reduce</span> <span class="nf">(duty, band) -&gt;</span>
+
+      <span class="k">if</span> <span class="nx">band</span><span class="p">.</span><span class="nx">min</span> <span class="o">&lt;</span> <span class="nx">value</span> <span class="o">and</span> <span class="nx">band</span><span class="p">.</span><span class="nx">max</span> <span class="o">&lt;</span> <span class="nx">value</span>
+        <span class="nx">duty</span> <span class="o">+=</span> <span class="p">(</span><span class="nx">band</span><span class="p">.</span><span class="nx">rate</span> <span class="o">/</span> <span class="mi">100</span> <span class="o">*</span> <span class="p">(</span><span class="nx">band</span><span class="p">.</span><span class="nx">max</span> <span class="o">-</span> <span class="nx">band</span><span class="p">.</span><span class="nx">min</span><span class="p">))</span>
+
+      <span class="k">if</span> <span class="nx">band</span><span class="p">.</span><span class="nx">min</span> <span class="o">&lt;</span> <span class="nx">value</span> <span class="o">and</span> <span class="nx">value</span> <span class="o">&lt;</span> <span class="nx">band</span><span class="p">.</span><span class="nx">max</span>
+        <span class="nx">duty</span> <span class="o">+=</span> <span class="p">(</span><span class="nx">band</span><span class="p">.</span><span class="nx">rate</span> <span class="o">/</span> <span class="mi">100</span> <span class="o">*</span> <span class="p">(</span><span class="nx">value</span> <span class="o">-</span> <span class="nx">band</span><span class="p">.</span><span class="nx">min</span><span class="p">))</span>
+
+      <span class="nx">duty</span>
+    <span class="p">,</span> <span class="mi">0</span>
+
+    <span class="nb">Math</span><span class="p">.</span><span class="nx">ceil</span> <span class="nx">duty</span>
+
+<span class="nv">module.exports = </span><span class="nx">StampDuty</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

@@ -7,12 +7,12 @@ module.exports = function (grunt) {
 	grunt.initConfig({
 		pkg: '<json:package.json>',
 
-		coffee: {
-			compile: {
-				file: {
-					'public/scripts/dist.js': ['public/coffee/*.*coffee']
-				}
-			}
+		coffeeify: {
+			options: {},
+			files: {
+				dest: 'public/scripts/app.js',
+				src: ['public/coffee/**/*.*coffee']
+			 }
 		},
 
 		watch: {
@@ -30,11 +30,11 @@ module.exports = function (grunt) {
 		}
 	});
 
-	grunt.loadNpmTasks('grunt-contrib-coffee');
+	grunt.loadNpmTasks('grunt-coffeeify');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-docco');
 
-	grunt.registerTask('default', ['docco', 'coffee']);
+	grunt.registerTask('default', ['docco', 'coffeeify']);
 	grunt.registerTask('docs',    ['docco']);
 
 };

@@ -21,7 +21,8 @@
     "grunt-contrib-coffee": "~0.6.0",
     "stitch": "~0.3.3",
     "grunt-stitch": "~0.1.0",
-    "coffeeify": "~0.3.0"
+    "coffeeify": "~0.3.0",
+    "grunt-coffeeify": "~0.1.2"
   },
   "main": "server.js",
   "subdomain": "lvr"
