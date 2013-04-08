@@ -44,69 +44,6 @@
 
 },{}],2:[function(require,module,exports){
 (function() {
-  var StampDuty;
-
-  StampDuty = (function() {
-    function StampDuty() {}
-
-    StampDuty.bands = [
-      {
-        min: 0,
-        max: 14000,
-        rate: 1.25
-      }, {
-        min: 14001,
-        max: 30000,
-        rate: 1.50
-      }, {
-        min: 30001,
-        max: 80000,
-        rate: 1.75
-      }, {
-        min: 80001,
-        max: 300000,
-        rate: 3.50
-      }, {
-        min: 300001,
-        max: 1000000,
-        rate: 4.50
-      }, {
-        min: 1000001,
-        max: 3000000,
-        rate: 5.50
-      }, {
-        min: 3000001,
-        max: Infinity,
-        rate: 7.00
-      }
-    ];
-
-    StampDuty.calculate = function(value) {
-      var duty;
-
-      duty = this.bands.reduce(function(duty, band) {
-        if (band.min < value && band.max < value) {
-          duty += band.rate / 100 * (band.max - band.min);
-        }
-        if (band.min < value && value < band.max) {
-          duty += band.rate / 100 * (value - band.min);
-        }
-        return duty;
-      }, 0);
-      return Math.ceil(duty);
-    };
-
-    return StampDuty;
-
-  })();
-
-  module.exports = StampDuty;
-
-}).call(this);
-
-
-},{}],3:[function(require,module,exports){
-(function() {
   var LMI, Mortgage, MortgageFormView, MortgageSummaryView, Period, StampDuty, f, m, v, _ref, _ref1, _ref2,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -114,7 +51,7 @@
 
   LMI = require('./lmi.coffee');
 
-  StampDuty = require('./stamp-duty.coffee');
+  StampDuty = require('stamp-duty');
 
   Period = {
     Monthly: 12,
@@ -134,11 +71,12 @@
       interest: 5.74,
       price: 700000,
       deposit: 150459,
-      duration: 30
+      duration: 30,
+      state: 'NSW'
     };
 
     Mortgage.prototype.stamp_duty = function() {
-      return StampDuty.calculate(this.price);
+      return StampDuty(this.state, this.price);
     };
 
     Mortgage.prototype.loan = function() {
@@ -315,5 +253,322 @@
 }).call(this);
 
 
-},{"./lmi.coffee":1,"./stamp-duty.coffee":2}]},{},[3,1,2])
+},{"./lmi.coffee":1,"stamp-duty":3}],4:[function(require,module,exports){
+// shim for using process in browser
+
+var process = module.exports = {};
+
+process.nextTick = (function () {
+    var canSetImmediate = typeof window !== 'undefined'
+    && window.setImmediate;
+    var canPost = typeof window !== 'undefined'
+    && window.postMessage && window.addEventListener
+    ;
+
+    if (canSetImmediate) {
+        return function (f) { return window.setImmediate(f) };
+    }
+
+    if (canPost) {
+        var queue = [];
+        window.addEventListener('message', function (ev) {
+            if (ev.source === window && ev.data === 'process-tick') {
+                ev.stopPropagation();
+                if (queue.length > 0) {
+                    var fn = queue.shift();
+                    fn();
+                }
+            }
+        }, true);
+
+        return function nextTick(fn) {
+            queue.push(fn);
+            window.postMessage('process-tick', '*');
+        };
+    }
+
+    return function nextTick(fn) {
+        setTimeout(fn, 0);
+    };
+})();
+
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+}
+
+// TODO(shtylman)
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+
+},{}],5:[function(require,module,exports){
+(function(process){function filter (xs, fn) {
+    var res = [];
+    for (var i = 0; i < xs.length; i++) {
+        if (fn(xs[i], i, xs)) res.push(xs[i]);
+    }
+    return res;
+}
+
+// resolves . and .. elements in a path array with directory names there
+// must be no slashes, empty elements, or device names (c:\) in the array
+// (so also no leading and trailing slashes - it does not distinguish
+// relative and absolute paths)
+function normalizeArray(parts, allowAboveRoot) {
+  // if the path tries to go above the root, `up` ends up > 0
+  var up = 0;
+  for (var i = parts.length; i >= 0; i--) {
+    var last = parts[i];
+    if (last == '.') {
+      parts.splice(i, 1);
+    } else if (last === '..') {
+      parts.splice(i, 1);
+      up++;
+    } else if (up) {
+      parts.splice(i, 1);
+      up--;
+    }
+  }
+
+  // if the path is allowed to go above the root, restore leading ..s
+  if (allowAboveRoot) {
+    for (; up--; up) {
+      parts.unshift('..');
+    }
+  }
+
+  return parts;
+}
+
+// Regex to split a filename into [*, dir, basename, ext]
+// posix version
+var splitPathRe = /^(.+\/(?!$)|\/)?((?:.+?)?(\.[^.]*)?)$/;
+
+// path.resolve([from ...], to)
+// posix version
+exports.resolve = function() {
+var resolvedPath = '',
+    resolvedAbsolute = false;
+
+for (var i = arguments.length; i >= -1 && !resolvedAbsolute; i--) {
+  var path = (i >= 0)
+      ? arguments[i]
+      : process.cwd();
+
+  // Skip empty and invalid entries
+  if (typeof path !== 'string' || !path) {
+    continue;
+  }
+
+  resolvedPath = path + '/' + resolvedPath;
+  resolvedAbsolute = path.charAt(0) === '/';
+}
+
+// At this point the path should be resolved to a full absolute path, but
+// handle relative paths to be safe (might happen when process.cwd() fails)
+
+// Normalize the path
+resolvedPath = normalizeArray(filter(resolvedPath.split('/'), function(p) {
+    return !!p;
+  }), !resolvedAbsolute).join('/');
+
+  return ((resolvedAbsolute ? '/' : '') + resolvedPath) || '.';
+};
+
+// path.normalize(path)
+// posix version
+exports.normalize = function(path) {
+var isAbsolute = path.charAt(0) === '/',
+    trailingSlash = path.slice(-1) === '/';
+
+// Normalize the path
+path = normalizeArray(filter(path.split('/'), function(p) {
+    return !!p;
+  }), !isAbsolute).join('/');
+
+  if (!path && !isAbsolute) {
+    path = '.';
+  }
+  if (path && trailingSlash) {
+    path += '/';
+  }
+  
+  return (isAbsolute ? '/' : '') + path;
+};
+
+
+// posix version
+exports.join = function() {
+  var paths = Array.prototype.slice.call(arguments, 0);
+  return exports.normalize(filter(paths, function(p, index) {
+    return p && typeof p === 'string';
+  }).join('/'));
+};
+
+
+exports.dirname = function(path) {
+  var dir = splitPathRe.exec(path)[1] || '';
+  var isWindows = false;
+  if (!dir) {
+    // No dirname
+    return '.';
+  } else if (dir.length === 1 ||
+      (isWindows && dir.length <= 3 && dir.charAt(1) === ':')) {
+    // It is just a slash or a drive letter with a slash
+    return dir;
+  } else {
+    // It is a full dirname, strip trailing slash
+    return dir.substring(0, dir.length - 1);
+  }
+};
+
+
+exports.basename = function(path, ext) {
+  var f = splitPathRe.exec(path)[2] || '';
+  // TODO: make this comparison case-insensitive on windows?
+  if (ext && f.substr(-1 * ext.length) === ext) {
+    f = f.substr(0, f.length - ext.length);
+  }
+  return f;
+};
+
+
+exports.extname = function(path) {
+  return splitPathRe.exec(path)[3] || '';
+};
+
+exports.relative = function(from, to) {
+  from = exports.resolve(from).substr(1);
+  to = exports.resolve(to).substr(1);
+
+  function trim(arr) {
+    var start = 0;
+    for (; start < arr.length; start++) {
+      if (arr[start] !== '') break;
+    }
+
+    var end = arr.length - 1;
+    for (; end >= 0; end--) {
+      if (arr[end] !== '') break;
+    }
+
+    if (start > end) return [];
+    return arr.slice(start, end - start + 1);
+  }
+
+  var fromParts = trim(from.split('/'));
+  var toParts = trim(to.split('/'));
+
+  var length = Math.min(fromParts.length, toParts.length);
+  var samePartsLength = length;
+  for (var i = 0; i < length; i++) {
+    if (fromParts[i] !== toParts[i]) {
+      samePartsLength = i;
+      break;
+    }
+  }
+
+  var outputParts = [];
+  for (var i = samePartsLength; i < fromParts.length; i++) {
+    outputParts.push('..');
+  }
+
+  outputParts = outputParts.concat(toParts.slice(samePartsLength));
+
+  return outputParts.join('/');
+};
+
+})(require("__browserify_process"))
+},{"__browserify_process":4}],3:[function(require,module,exports){
+var path = require('path');
+var data = require('./data');
+
+function filter (value) {
+	return function (band) {
+		return band.min <= value && value <= band.max;
+	};
+}
+
+function toFixed (value, precision) {
+	if (precision == null) precision = 2;
+
+	var power = Math.pow(10, precision);
+	var fixed = (Math.round(value * power) / power).toFixed(precision);
+	return parseFloat(fixed);
+}
+
+Array.prototype.first = function (filter) {
+	var i, length;
+	for (i = 0, length = this.length; i < length; i += 1)
+		if (filter.call(this, this[i]) === true)
+			return this[i];
+}
+
+module.exports = function (state, value) {
+	if (state == null) state = 'nsw';
+	if (value == null) value = 0;
+
+	var bands = data[state.toLowerCase()];
+	var band = bands.first(filter(value));
+	var duty = band.base + (value - (band.over || band.min)) * (band.rate / 100);
+
+	return toFixed(duty);
+};
+
+},{"path":5,"./data":6}],6:[function(require,module,exports){
+module.exports = {
+	nsw: [
+		{ min: 0,       max: 14000,    rate: 1.25, base: 0 },
+		{ min: 14000,   max: 30000,    rate: 1.50, base: 175 },
+		{ min: 30000,   max: 80000,    rate: 1.75, base: 415 },
+		{ min: 80000,   max: 300000,   rate: 3.50, base: 1290 },
+		{ min: 300000,  max: 1000000,  rate: 4.50, base: 8990 },
+		{ min: 1000000, max: 3000000,  rate: 5.50, base: 40490 },
+		{ min: 3000000, max: Infinity, rate: 7.00, base: 150490 }
+	],
+
+	qld: [
+		{ min: 0,       max: 5000,     rate: 0.00, base: 0 },
+		{ min: 5000,    max: 105000,   rate: 1.50, base: 0, over: 5000 },
+		{ min: 105000,  max: 480000,   rate: 3.50, base: 1500 },
+		{ min: 480000,  max: 980000,   rate: 4.50, base: 14625 },
+		{ min: 980000,  max: Infinity, rate: 5.25, base: 37125 }
+	],
+
+	sa: [
+		{ min: 0,       max: 12000,    rate: 1.00, base: 0 },
+		{ min: 12000,   max: 30000,    rate: 2.00, base: 120 },
+		{ min: 30000,   max: 50000,    rate: 3.00, base: 480 },
+		{ min: 50000,   max: 100000,   rate: 3.50, base: 1080 },
+		{ min: 100000,  max: 200000,   rate: 4.00, base: 2830 },
+		{ min: 200000,  max: 250000,   rate: 4.25, base: 6830 },
+		{ min: 250000,  max: 300000,   rate: 4.75, base: 8955 },
+		{ min: 300000,  max: 500000,   rate: 5.00, base: 11330 },
+		{ min: 500000,  max: Infinity, rate: 5.50, base: 21330 }
+	],
+
+	vic: [
+		{ min: 0,      max: 25000,    rate: 1.40, base: 0 },
+		{ min: 25000,  max: 130000,   rate: 2.40, base: 350 },
+		{ min: 130000, max: 440000,   rate: 5.00, base: 2870 },
+		{ min: 440000, max: 550000,   rate: 6.00, base: 18370 },
+		{ min: 550000, max: 960000,   rate: 6.00, base: 2870, over: 130000 },
+		{ min: 960000, max: Infinity, rate: 5.50, base: 0 }
+	],
+
+	wa: [
+		{ min: 0,       max: 120000,   rate: 1.90, base: 0 },
+		{ min: 120000,  max: 150000,   rate: 2.85, base: 2280 },
+		{ min: 150000,  max: 360000,   rate: 3.80, base: 3135 },
+		{ min: 360000,  max: 300000,   rate: 4.75, base: 11115 },
+		{ min: 725000,  max: Infinity, rate: 5.15, base: 28435 }
+	]
+};
+},{}]},{},[2,1])
 ;

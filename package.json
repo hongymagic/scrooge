@@ -10,13 +10,14 @@
     "statik": "*",
     "mocha": "1.8.x",
     "chai": "1.5.x",
-    "sinon-chai": "2.3.x"
+    "sinon-chai": "2.3.x",
+    "stamp-duty": "0.x.x"
   },
   "devDependencies": {
     "grunt": "~0.4.0",
     "grunt-docco": "~0.2.0",
     "grunt-contrib-watch": "~0.3.1",
-    "grunt-coffeeify": "~0.1.2"
+    "grunt-coffeeify": "git://github.com/Banno/grunt-coffeeify.git#eb6ce47b"
   },
   "main": "server.js",
   "subdomain": "lvr"
