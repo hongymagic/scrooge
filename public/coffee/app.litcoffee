@@ -1,4 +1,4 @@
-	LMI       = require './lmi.coffee'
+	LMI       = require './lmi.litcoffee'
 	StampDuty = require 'stamp-duty'
 
 	Period =
