@@ -45,6 +45,7 @@
 				<li>Borrowing <span><%- borrowing %></span></li>
 				<li>LVR of <span><%- lvr %></span>%</li>
 				<li>LMI <span><%- lmi %></span></li>
+				<li>Stamp duty <span><%- stamp_duty %></span></li>
 				<li>Fees <span><%- fees %></span></li>
 				<li>Repayments <span><%- repayments %></span> per month for <span><%- duration %></span> years!</li>
 			</ul>
@@ -53,19 +54,19 @@
 			<div class="input-group">
 				<div class="input-row">
 					<label>Price</label>
-					<input type="number" name="price" placeholder="Total savings" readonly="true" data-step="1000">
+					<input type="number" name="price" placeholder="Total savings" data-step="1000">
 				</div>
 				<div class="input-row">
 					<label>Savings</label>
-					<input type="number" name="deposit" placeholder="Total savings" readonly="true" data-step="1000">
+					<input type="number" name="savings" placeholder="Total savings" data-step="1000">
 				</div>
 				<div class="input-row">
 					<label>Interest rate</label>
-					<input type="number" name="interest" placeholder="Interest rate" readonly="true" data-step="0.1">
+					<input type="number" name="interest" placeholder="Interest rate" data-step="0.1">
 				</div>
 				<div class="input-row">
 					<label>Duration</label>
-					<input type="number" name="duration" placeholder="Repayment duration in months" readonly="true" data-step="1">
+					<input type="number" name="duration" placeholder="Repayment duration in months" data-step="1">
 				</div>
 			</div>
 		</script>

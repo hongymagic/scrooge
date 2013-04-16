@@ -1,4 +1,4 @@
-	LMI       = require './lmi.litcoffee'
+	LMI       = require 'lmi'
 	StampDuty = require 'stamp-duty'
 
 	Period =
@@ -12,20 +12,23 @@ which states variables such as price, loan, interest rate and etc.
 	class Mortgage extends Backbone.Model
 
 		defaults:
-			interest: 5.74
-			price:    700000
-			deposit:  150459
-			duration: 30
+			interest: 5.75
+			price:    760000
+			savings:  100000
+			duration: 10
 			state:    'NSW'
+
+		deposit: ->
+			@savings - @stamp_duty()
 
 		stamp_duty: ->
 			StampDuty @state, @price
 
 		loan: ->
-			@price - @deposit
+			@price - @deposit()
 
 		borrowing: ->
-			@loan() + @lmi() + @fees() + @stamp_duty()
+			@loan() + @lmi() + @fees()
 
 		fees: ->
 			2469
@@ -34,7 +37,7 @@ which states variables such as price, loan, interest rate and etc.
 			@loan() / @price
 
 		lmi: ->
-			LMI.lookup(@lvr(), @loan()) * @loan()
+			LMI @lvr(), @loan()
 
 		repayments: () ->
 			P = @borrowing()
