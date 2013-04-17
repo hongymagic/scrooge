@@ -20,6 +20,7 @@
 		<link rel="apple-touch-icon-precomposed" sizes="57x57" href="touch-icons/apple-touch-icon-57x57.png">
 
 		<link rel="stylesheet" href="styles/ratchet.css">
+		<link rel="stylesheet" href="styles/styles.css">
 
 		<script src="scripts/lib/ratchet.js"></script>
 		<script src="scripts/lib/accounting.js"></script>
@@ -37,7 +38,7 @@
 		<!-- Wrap all non-bar HTML in the .content div (this is actually what scrolls) -->
 		<div class="content">
 			<div id="summary"></div>
-			<div id="form"></div>
+			<form id="form"></form>
 		</div>
 
 		<script type="text/html" id="__MortgageSummary">
@@ -53,19 +54,15 @@
 		<script type="text/html" id="__MortgageForm">
 			<div class="input-group">
 				<div class="input-row">
-					<label>Price</label>
-					<input type="number" name="price" placeholder="Total savings" data-step="1000">
+					<input type="number" name="price" class="currency" placeholder="Total savings" data-step="1000">
 				</div>
 				<div class="input-row">
-					<label>Savings</label>
 					<input type="number" name="savings" placeholder="Total savings" data-step="1000">
 				</div>
 				<div class="input-row">
-					<label>Interest rate</label>
 					<input type="number" name="interest" placeholder="Interest rate" data-step="0.1">
 				</div>
 				<div class="input-row">
-					<label>Duration</label>
 					<input type="number" name="duration" placeholder="Repayment duration in months" data-step="1">
 				</div>
 			</div>

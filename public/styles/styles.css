@@ -1,0 +1,68 @@
+@import url(http://fonts.googleapis.com/css?family=Oswald);
+
+body {
+	font: 100%/140% 'Oswald', Helvetica, sans-serif;
+}
+
+/* Don't let users select inside the form */
+form {
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+}
+
+/* Remove webkit inner spinners */
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+}
+
+/**
+ * Ratchet overrides
+ */
+
+.bar-title {
+	background-color: #F1C40F;
+}
+
+.input-group, .input-row {
+	border: 0;
+	padding: 0;
+}
+
+.input-row {
+	margin: 3px;
+}
+
+/**
+ * Custom styles
+ */
+
+input[type=number], button {
+	border: 3px solid #222222;
+	padding: 0;
+	height: 43px;
+
+	border-radius: 7px;
+	box-sizing: border-box;
+
+	position: relative;
+}
+
+input[type=number] {
+	padding: 0 7px;
+	text-align: right;
+	font-size: 160%;
+}
+
+input[type=number]:active,
+input[type=number]:focus {
+	background-color: #E74C3C;
+	border-color: #E74C3C;
+	color: #ffffff;
+	outline: 0;
+}
+
+li span {
+	font-size: 140%;
+	color: #E74C3C;
+}
