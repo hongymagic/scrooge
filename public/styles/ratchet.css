@@ -702,20 +702,11 @@ select {
 
 /* Labels get floated left with a set percentage width */
 .input-row label {
-  float: left;
-  width: 25%;
   padding: 11px 10px 9px 13px; /* Optimizing the baseline for mobile. */
-  font-weight: bold;
+  font-weight: 300;
 }
 
-/* Actual inputs float to right of labels and also have a set percentage */
-.input-row label + input {
-  float: right;
-  width: 65%;
-  padding-left: 0;
-  margin-bottom: 0;
-  border-bottom: 0;
-}/* General button styles
+/* General button styles
 -------------------------------------------------- */
 
 [class*="button"] {

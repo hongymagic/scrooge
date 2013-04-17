@@ -62,7 +62,7 @@ which states variables such as price, loan, interest rate and etc.
 			decimals = ['lvr', 'interest']
 			json = @toJSON()
 			for key, value of json
-				json[key] = accounting.formatMoney value if key in monies
+				json[key] = accounting.formatNumber value if key in monies
 				json[key] = accounting.formatNumber value if key in decimals
 			json
 

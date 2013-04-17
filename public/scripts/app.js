@@ -134,7 +134,7 @@
       for (key in json) {
         value = json[key];
         if (__indexOf.call(monies, key) >= 0) {
-          json[key] = accounting.formatMoney(value);
+          json[key] = accounting.formatNumber(value);
         }
         if (__indexOf.call(decimals, key) >= 0) {
           json[key] = accounting.formatNumber(value);
