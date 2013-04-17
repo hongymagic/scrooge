@@ -1,7 +1,7 @@
 @import url(http://fonts.googleapis.com/css?family=Oswald);
 
 body {
-	font: 100%/140% 'Oswald', Helvetica, sans-serif;
+	font: 110%/140% 'Oswald', Helvetica, sans-serif;
 }
 
 /* Don't let users select inside the form */
@@ -21,7 +21,11 @@ input::-webkit-inner-spin-button {
  */
 
 .bar-title {
-	background-color: #F1C40F;
+	background-color: #34495E;
+}
+
+.content {
+	padding: 0.7em 3px;
 }
 
 .input-group, .input-row {
@@ -37,7 +41,7 @@ input::-webkit-inner-spin-button {
  * Custom styles
  */
 
-input[type=number], button {
+input[type], button {
 	border: 3px solid #222222;
 	padding: 0;
 	height: 43px;
@@ -48,21 +52,35 @@ input[type=number], button {
 	position: relative;
 }
 
-input[type=number] {
+input[type] {
 	padding: 0 7px;
 	text-align: right;
 	font-size: 160%;
 }
 
-input[type=number]:active,
-input[type=number]:focus {
+input[type]:active,
+input[type]:focus {
 	background-color: #E74C3C;
 	border-color: #E74C3C;
 	color: #ffffff;
 	outline: 0;
 }
 
-li span {
+strong, em, span {
 	font-size: 140%;
+	font-weight: normal;
+	font-style: normal;
+	text-decoration: none;
+}
+
+strong {
+	color: #3498DB;
+}
+
+em {
 	color: #E74C3C;
+}
+
+span {
+	color: #34495E;
 }

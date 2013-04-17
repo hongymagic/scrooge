@@ -42,28 +42,34 @@
 		</div>
 
 		<script type="text/html" id="__MortgageSummary">
-			<ul class="list">
-				<li>Borrowing <span><%- borrowing %></span></li>
-				<li>LVR of <span><%- lvr %></span>%</li>
-				<li>LMI <span><%- lmi %></span></li>
-				<li>Stamp duty <span><%- stamp_duty %></span></li>
-				<li>Fees <span><%- fees %></span></li>
-				<li>Repayments <span><%- repayments %></span> per month for <span><%- duration %></span> years!</li>
-			</ul>
+			<p>$<em><%- price %></em> is the price</p>
+			<p>$<strong><%- savings %></strong> savings</p>
+			<p>$<em><%- stamp_duty %></em> is stamp fucking duty</p>
+			<p>$<strong><%- deposit %></strong> is your deposit</p>
+			<p>$<em><%- lmi %></em> in LMI (<em><%- lvr %></em>% LVR)</p>
+			<p>$<em><%- fees %></em> are your fees</p>
+			<p>$<em><%- borrowing %></em> is your total borrowing</p>
+
+			<hr />
+
+			<p>You will need to pay:</p>
+			<p>$<em><%- repayments %></em> per month for <span><%- duration * 12 %></span> months!</p>
+
+			<hr />
 		</script>
 		<script type="text/html" id="__MortgageForm">
 			<div class="input-group">
 				<div class="input-row">
-					<input type="number" name="price" class="currency" placeholder="Total savings" data-step="1000">
+					<input type="tel" name="price" class="currency" placeholder="Total savings" data-step="1000">
 				</div>
 				<div class="input-row">
-					<input type="number" name="savings" placeholder="Total savings" data-step="1000">
+					<input type="tel" name="savings" placeholder="Total savings" data-step="1000">
 				</div>
 				<div class="input-row">
 					<input type="number" name="interest" placeholder="Interest rate" data-step="0.1">
 				</div>
 				<div class="input-row">
-					<input type="number" name="duration" placeholder="Repayment duration in months" data-step="1">
+					<input type="tel" name="duration" placeholder="Repayment duration in years" data-step="1">
 				</div>
 			</div>
 		</script>

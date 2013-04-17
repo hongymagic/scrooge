@@ -49,6 +49,7 @@ which states variables such as price, loan, interest rate and etc.
 			_.extend _.clone(@attributes), {
 				fees       : @fees()
 				loan       : @loan()
+				deposit    : @deposit()
 				borrowing  : @borrowing()
 				lvr        : @lvr() * 100
 				repayments : @repayments()
@@ -57,7 +58,7 @@ which states variables such as price, loan, interest rate and etc.
 			}
 
 		toFormattedJSON: ->
-			monies   = ['price', 'deposit', 'stamp_duty', 'fees', 'loan', 'borrowing', 'repayments', 'lmi']
+			monies   = ['price', 'savings', 'deposit', 'stamp_duty', 'fees', 'loan', 'borrowing', 'repayments', 'lmi']
 			decimals = ['lvr', 'interest']
 			json = @toJSON()
 			for key, value of json
@@ -76,11 +77,6 @@ which states variables such as price, loan, interest rate and etc.
 
 		template: _.template $('#__MortgageForm').html()
 
-		events:
-			'touchstart [type=number]': 'registerTouch'
-			'touchmove  [type=number]': 'changeProperty'
-			'touchend   [type=number]': 'deregisterTouch'
-
 		initialize: ->
 			@binder = new Backbone.ModelBinder
 
@@ -88,30 +84,6 @@ which states variables such as price, loan, interest rate and etc.
 			@$el.html @template @model.toJSON()
 			@binder.bind @model, @el
 			@
-
-		registerTouch: (event) ->
-			touch = event.originalEvent.touches[0]
-			@touch =
-				x: touch.pageX
-				y: touch.pageY
-
-		changeProperty: (event) ->
-			event.preventDefault()
-			touch = event.originalEvent.touches[0]
-			$target = $ event.target
-			property = $target.attr 'name'
-			step = $target.data 'step'
-			value = @model.get property
-
-			if (touch.pageY - @touch.y < 0)
-				value += step
-			else
-				value -= step
-
-			@model.set property, value
-
-		deregisterTouch: (event) ->
-			@touch = null
 
 	class MortgageSummaryView extends Backbone.View
 

@@ -116,6 +116,7 @@
       return _.extend(_.clone(this.attributes), {
         fees: this.fees(),
         loan: this.loan(),
+        deposit: this.deposit(),
         borrowing: this.borrowing(),
         lvr: this.lvr() * 100,
         repayments: this.repayments(),
@@ -127,7 +128,7 @@
     Mortgage.prototype.toFormattedJSON = function() {
       var decimals, json, key, monies, value;
 
-      monies = ['price', 'deposit', 'stamp_duty', 'fees', 'loan', 'borrowing', 'repayments', 'lmi'];
+      monies = ['price', 'savings', 'deposit', 'stamp_duty', 'fees', 'loan', 'borrowing', 'repayments', 'lmi'];
       decimals = ['lvr', 'interest'];
       json = this.toJSON();
       for (key in json) {
@@ -164,12 +165,6 @@
 
     MortgageFormView.prototype.template = _.template($('#__MortgageForm').html());
 
-    MortgageFormView.prototype.events = {
-      'touchstart [type=number]': 'registerTouch',
-      'touchmove  [type=number]': 'changeProperty',
-      'touchend   [type=number]': 'deregisterTouch'
-    };
-
     MortgageFormView.prototype.initialize = function() {
       return this.binder = new Backbone.ModelBinder;
     };
@@ -178,37 +173,6 @@
       this.$el.html(this.template(this.model.toJSON()));
       this.binder.bind(this.model, this.el);
       return this;
-    };
-
-    MortgageFormView.prototype.registerTouch = function(event) {
-      var touch;
-
-      touch = event.originalEvent.touches[0];
-      return this.touch = {
-        x: touch.pageX,
-        y: touch.pageY
-      };
-    };
-
-    MortgageFormView.prototype.changeProperty = function(event) {
-      var $target, property, step, touch, value;
-
-      event.preventDefault();
-      touch = event.originalEvent.touches[0];
-      $target = $(event.target);
-      property = $target.attr('name');
-      step = $target.data('step');
-      value = this.model.get(property);
-      if (touch.pageY - this.touch.y < 0) {
-        value += step;
-      } else {
-        value -= step;
-      }
-      return this.model.set(property, value);
-    };
-
-    MortgageFormView.prototype.deregisterTouch = function(event) {
-      return this.touch = null;
     };
 
     return MortgageFormView;
@@ -401,5 +365,5 @@ module.exports = {
 		{ min: 725000,  max: Infinity, rate: 5.15, base: 28435 }
 	]
 };
-},{}]},{},[1,2])
+},{}]},{},[2,1])
 ;
