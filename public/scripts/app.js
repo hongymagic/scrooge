@@ -1,122 +1,15 @@
 ;(function(e,t,n){function i(n,s){if(!t[n]){if(!e[n]){var o=typeof require=="function"&&require;if(!s&&o)return o(n,!0);if(r)return r(n,!0);throw new Error("Cannot find module '"+n+"'")}var u=t[n]={exports:{}};e[n][0](function(t){var r=e[n][1][t];return i(r?r:t)},u,u.exports)}return t[n].exports}var r=typeof require=="function"&&require;for(var s=0;s<n.length;s++)i(n[s]);return i})({1:[function(require,module,exports){
 (function() {
-  var FastClick, LMI, Mortgage, MortgageFormView, MortgageSummaryView, Period, StampDuty, f, m, v, _ref, _ref1, _ref2,
+  var MortgageFormView, _ref,
     __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
-
-  FastClick = require('fastclick');
-
-  LMI = require('lmi');
-
-  StampDuty = require('stamp-duty');
-
-  Period = {
-    Monthly: 12,
-    Fortnightly: 24,
-    Weekly: 48
-  };
-
-  Mortgage = (function(_super) {
-    __extends(Mortgage, _super);
-
-    function Mortgage() {
-      _ref = Mortgage.__super__.constructor.apply(this, arguments);
-      return _ref;
-    }
-
-    Mortgage.prototype.defaults = {
-      interest: 5.75,
-      price: 760000,
-      savings: 100000,
-      duration: 10,
-      state: 'NSW'
-    };
-
-    Mortgage.prototype.deposit = function() {
-      return this.savings - this.stamp_duty();
-    };
-
-    Mortgage.prototype.stamp_duty = function() {
-      return StampDuty(this.state, this.price);
-    };
-
-    Mortgage.prototype.loan = function() {
-      return this.price - this.deposit();
-    };
-
-    Mortgage.prototype.borrowing = function() {
-      return this.loan() + this.lmi() + this.fees();
-    };
-
-    Mortgage.prototype.fees = function() {
-      return 2469;
-    };
-
-    Mortgage.prototype.lvr = function() {
-      return this.loan() / this.price;
-    };
-
-    Mortgage.prototype.lmi = function() {
-      return LMI(this.lvr(), this.loan());
-    };
-
-    Mortgage.prototype.repayments = function() {
-      var P, i, n;
-
-      P = this.borrowing();
-      i = this.interest / Period.Monthly / 100;
-      n = this.duration * Period.Monthly;
-      return P * (i * Math.pow(i + 1, n)) / (Math.pow(1 + i, n) - 1);
-    };
-
-    Mortgage.prototype.toJSON = function() {
-      return _.extend(_.clone(this.attributes), {
-        fees: this.fees(),
-        loan: this.loan(),
-        deposit: this.deposit(),
-        borrowing: this.borrowing(),
-        lvr: this.lvr() * 100,
-        repayments: this.repayments(),
-        lmi: this.lmi(),
-        stamp_duty: this.stamp_duty()
-      });
-    };
-
-    Mortgage.prototype.toFormattedJSON = function() {
-      var decimals, json, key, monies, value;
-
-      monies = ['price', 'savings', 'deposit', 'stamp_duty', 'fees', 'loan', 'borrowing', 'repayments', 'lmi'];
-      decimals = ['lvr', 'interest'];
-      json = this.toJSON();
-      for (key in json) {
-        value = json[key];
-        if (__indexOf.call(monies, key) >= 0) {
-          json[key] = accounting.formatNumber(value);
-        }
-        if (__indexOf.call(decimals, key) >= 0) {
-          json[key] = accounting.formatNumber(value);
-        }
-      }
-      return json;
-    };
-
-    Mortgage.prototype.update = function() {};
-
-    Mortgage.prototype.toString = function() {
-      return JSON.stringify(this.toJSON());
-    };
-
-    return Mortgage;
-
-  })(Backbone.Model);
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   MortgageFormView = (function(_super) {
     __extends(MortgageFormView, _super);
 
     function MortgageFormView() {
-      _ref1 = MortgageFormView.__super__.constructor.apply(this, arguments);
-      return _ref1;
+      _ref = MortgageFormView.__super__.constructor.apply(this, arguments);
+      return _ref;
     }
 
     MortgageFormView.prototype.el = '#form';
@@ -137,12 +30,23 @@
 
   })(Backbone.View);
 
+  module.exports = MortgageFormView;
+
+}).call(this);
+
+
+},{}],2:[function(require,module,exports){
+(function() {
+  var MortgageSummaryView, _ref,
+    __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
   MortgageSummaryView = (function(_super) {
     __extends(MortgageSummaryView, _super);
 
     function MortgageSummaryView() {
-      _ref2 = MortgageSummaryView.__super__.constructor.apply(this, arguments);
-      return _ref2;
+      _ref = MortgageSummaryView.__super__.constructor.apply(this, arguments);
+      return _ref;
     }
 
     MortgageSummaryView.prototype.el = '#summary';
@@ -161,6 +65,23 @@
     return MortgageSummaryView;
 
   })(Backbone.View);
+
+  module.exports = MortgageSummaryView;
+
+}).call(this);
+
+
+},{}],3:[function(require,module,exports){
+(function() {
+  var FastClick, Mortgage, MortgageFormView, MortgageSummaryView, f, m, v;
+
+  FastClick = require('fastclick');
+
+  Mortgage = require('./models/mortgage.litcoffee');
+
+  MortgageFormView = require('./views/mortgageFormView.litcoffee');
+
+  MortgageSummaryView = require('./views/mortgageSummaryView.litcoffee');
 
   FastClick(document.body);
 
@@ -181,7 +102,7 @@
 }).call(this);
 
 
-},{"fastclick":2,"lmi":3,"stamp-duty":4}],2:[function(require,module,exports){
+},{"./models/mortgage.litcoffee":4,"./views/mortgageFormView.litcoffee":1,"./views/mortgageSummaryView.litcoffee":2,"fastclick":5}],5:[function(require,module,exports){
 (function(){/**
  * @preserve FastClick: polyfill to remove click delays on browsers with touch UIs.
  *
@@ -866,7 +787,123 @@ if (typeof module !== 'undefined' && module.exports) {
 }
 
 })()
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
+(function() {
+  var LMI, Mortgage, Period, StampDuty, _ref,
+    __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
+  LMI = require('lmi');
+
+  StampDuty = require('stamp-duty');
+
+  Period = {
+    Monthly: 12,
+    Fortnightly: 24,
+    Weekly: 48
+  };
+
+  Mortgage = (function(_super) {
+    __extends(Mortgage, _super);
+
+    function Mortgage() {
+      _ref = Mortgage.__super__.constructor.apply(this, arguments);
+      return _ref;
+    }
+
+    Mortgage.prototype.defaults = {
+      interest: 5.75,
+      price: 760000,
+      savings: 100000,
+      duration: 10,
+      state: 'NSW'
+    };
+
+    Mortgage.prototype.deposit = function() {
+      return this.savings - this.stamp_duty();
+    };
+
+    Mortgage.prototype.stamp_duty = function() {
+      return StampDuty(this.state, this.price);
+    };
+
+    Mortgage.prototype.loan = function() {
+      return this.price - this.deposit();
+    };
+
+    Mortgage.prototype.borrowing = function() {
+      return this.loan() + this.lmi() + this.fees();
+    };
+
+    Mortgage.prototype.fees = function() {
+      return 2469;
+    };
+
+    Mortgage.prototype.lvr = function() {
+      return this.loan() / this.price;
+    };
+
+    Mortgage.prototype.lmi = function() {
+      return LMI(this.lvr(), this.loan());
+    };
+
+    Mortgage.prototype.repayments = function() {
+      var P, i, n;
+
+      P = this.borrowing();
+      i = this.interest / Period.Monthly / 100;
+      n = this.duration * Period.Monthly;
+      return P * (i * Math.pow(i + 1, n)) / (Math.pow(1 + i, n) - 1);
+    };
+
+    Mortgage.prototype.toJSON = function() {
+      return _.extend(_.clone(this.attributes), {
+        fees: this.fees(),
+        loan: this.loan(),
+        deposit: this.deposit(),
+        borrowing: this.borrowing(),
+        lvr: this.lvr() * 100,
+        repayments: this.repayments(),
+        lmi: this.lmi(),
+        stamp_duty: this.stamp_duty()
+      });
+    };
+
+    Mortgage.prototype.toFormattedJSON = function() {
+      var decimals, json, key, monies, value;
+
+      monies = ['price', 'savings', 'deposit', 'stamp_duty', 'fees', 'loan', 'borrowing', 'repayments', 'lmi'];
+      decimals = ['lvr', 'interest'];
+      json = this.toJSON();
+      for (key in json) {
+        value = json[key];
+        if (__indexOf.call(monies, key) >= 0) {
+          json[key] = accounting.formatNumber(value);
+        }
+        if (__indexOf.call(decimals, key) >= 0) {
+          json[key] = accounting.formatNumber(value);
+        }
+      }
+      return json;
+    };
+
+    Mortgage.prototype.update = function() {};
+
+    Mortgage.prototype.toString = function() {
+      return JSON.stringify(this.toJSON());
+    };
+
+    return Mortgage;
+
+  })(Backbone.Model);
+
+  module.exports = Mortgage;
+
+}).call(this);
+
+
+},{"lmi":6,"stamp-duty":7}],6:[function(require,module,exports){
 // A sample lenders' mortgage insurance (LMI) calculator for Australia. Please
 // note that LMI will vary between lenders and this calculation should be used
 // only as a sample guide.
@@ -926,7 +963,7 @@ module.exports = function (lvr, loan, precision) {
 	return toFixed(rate(lvr, loan) * loan, precision || 2);;
 };
 
-},{}],4:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 var data = require('./data');
 
 function filter (value) {
@@ -961,7 +998,7 @@ module.exports = function (state, value) {
 	return toFixed(duty);
 };
 
-},{"./data":5}],5:[function(require,module,exports){
+},{"./data":8}],8:[function(require,module,exports){
 module.exports = {
 	nsw: [
 		{ min: 0,       max: 14000,    rate: 1.25, base: 0 },
@@ -1010,5 +1047,5 @@ module.exports = {
 		{ min: 725000,  max: Infinity, rate: 5.15, base: 28435 }
 	]
 };
-},{}]},{},[1])
+},{}]},{},[3,4,1,2])
 ;
