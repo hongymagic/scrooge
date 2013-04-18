@@ -12,7 +12,8 @@
     "chai": "1.5.x",
     "sinon-chai": "2.3.x",
     "stamp-duty": "~0.0.x",
-    "lmi": "0.0.1"
+    "lmi": "0.0.1",
+    "fastclick": "~0.6.1"
   },
   "devDependencies": {
     "grunt": "~0.4.0",

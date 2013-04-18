@@ -1,3 +1,7 @@
+	FastClick = require 'fastclick'
+
+Import calculators needed
+
 	LMI       = require 'lmi'
 	StampDuty = require 'stamp-duty'
 
@@ -97,6 +101,10 @@ which states variables such as price, loan, interest rate and etc.
 		render: ->
 			@$el.html @template @model.toFormattedJSON()
 			@
+
+Enable fastclick on iOS WebView
+
+	FastClick document.body
 
 	m = new Mortgage
 	f = new MortgageFormView { model: m }
