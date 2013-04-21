@@ -813,11 +813,12 @@ if (typeof module !== 'undefined' && module.exports) {
     }
 
     Mortgage.prototype.defaults = {
-      interest: 5.75,
-      price: 760000,
-      savings: 100000,
-      duration: 10,
-      state: 'NSW'
+      interest: 5.54,
+      price: 768000,
+      savings: 134000,
+      duration: 30,
+      state: 'NSW',
+      capitalize: true
     };
 
     Mortgage.prototype.deposit = function() {
@@ -833,7 +834,13 @@ if (typeof module !== 'undefined' && module.exports) {
     };
 
     Mortgage.prototype.borrowing = function() {
-      return this.loan() + this.lmi() + this.fees();
+      var borrowing;
+
+      borrowing = this.loan();
+      if (this.capitalize) {
+        borrowing += this.lmi() + this.fees();
+      }
+      return borrowing;
     };
 
     Mortgage.prototype.fees = function() {
@@ -845,7 +852,14 @@ if (typeof module !== 'undefined' && module.exports) {
     };
 
     Mortgage.prototype.lmi = function() {
-      return LMI(this.lvr(), this.loan());
+      var lvr;
+
+      lvr = this.lvr();
+      if (lvr <= 0.80) {
+        return 0;
+      } else {
+        return LMI(lvr, this.loan());
+      }
     };
 
     Mortgage.prototype.repayments = function() {
@@ -887,8 +901,6 @@ if (typeof module !== 'undefined' && module.exports) {
       }
       return json;
     };
-
-    Mortgage.prototype.update = function() {};
 
     Mortgage.prototype.toString = function() {
       return JSON.stringify(this.toJSON());

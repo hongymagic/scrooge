@@ -48,6 +48,10 @@ label {
 	z-index: 10;
 }
 
+label.checkbox {
+	position: inherit;
+}
+
 input[type], button {
 	border: 3px solid #222222;
 	padding: 0;
@@ -67,6 +71,19 @@ input[type] {
 
 input[type]:active,
 input[type]:focus {
+	background-color: #E74C3C;
+	border-color: #E74C3C;
+	color: #ffffff;
+	outline: 0;
+}
+
+input[type=checkbox] {
+	-webkit-appearance: none;
+	width: 43px;
+	height: 43px;
+}
+
+input[type=checkbox]:checked {
 	background-color: #E74C3C;
 	border-color: #E74C3C;
 	color: #ffffff;
