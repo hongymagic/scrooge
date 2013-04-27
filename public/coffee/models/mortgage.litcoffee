@@ -13,8 +13,8 @@ which states variables such as price, loan, interest rate and etc.
 
 		defaults:
 			interest:   5.54
-			price:      768000
-			savings:    134000
+			price:      760000
+			savings:    154290
 			duration:   30
 			state:      'NSW'
 			capitalize: true
@@ -26,7 +26,7 @@ TODO: when use decides NOT to capitalize, LMI and fees must be taken our of
 the total savings.
 
 		deposit: ->
-			@savings - @stamp_duty()
+			@savings - @stamp_duty() - @fees()
 
 		stamp_duty: ->
 			StampDuty @state, @price
@@ -37,17 +37,24 @@ the total savings.
 		borrowing: ->
 			borrowing = @loan()
 			if (@capitalize)
-				borrowing += @lmi() + @fees()
+				borrowing += @lmi()
 			borrowing
 
+TODO:
+
 		fees: ->
-			2469
+			3000
 
 Loan to value ratio is given in percentage and represents the ratio of your
 contribution verses the loan itself.
 
 		lvr: ->
 			@loan() / @price
+
+When capitalizing, LVR is recalculated on the capitalized loan amount
+
+		capitalized_lvr: ->
+			@borrowing() / @price
 
 With most lenders, you do not need to pay mortgage insurance if your LVR is
 below 80%. This means that you will need 20% deposit in order to avoid paying
@@ -68,24 +75,24 @@ goes over 90%.
 			P * (i * Math.pow((i + 1), n)) / (Math.pow((1 + i), n) - 1)
 
 		toJSON: ->
-			_.extend _.clone(@attributes), {
-				fees       : @fees()
-				loan       : @loan()
-				deposit    : @deposit()
-				borrowing  : @borrowing()
-				lvr        : @lvr() * 100
-				repayments : @repayments()
-				lmi        : @lmi()
-				stamp_duty : @stamp_duty()
-			}
+			_.extend _.clone(@attributes),
+				fees            : @fees()
+				loan            : @loan()
+				deposit         : @deposit()
+				borrowing       : @borrowing()
+				lvr             : @lvr() * 100
+				repayments      : @repayments()
+				lmi             : @lmi()
+				stamp_duty      : @stamp_duty()
+				capitalized_lvr : @capitalized_lvr() * 100
 
 		toFormattedJSON: ->
 			monies   = ['price', 'savings', 'deposit', 'stamp_duty', 'fees', 'loan', 'borrowing', 'repayments', 'lmi']
-			decimals = ['lvr', 'interest']
+			decimals = ['lvr', 'capitalized_lvr', 'interest']
 			json = @toJSON()
 			for key, value of json
 				json[key] = accounting.formatNumber value if key in monies
-				json[key] = accounting.formatNumber value if key in decimals
+				json[key] = accounting.formatNumber value, 2 if key in decimals
 			json
 
 		toString: ->
